@@ -17,6 +17,13 @@ const getById = async (req, res, _next) => {
 
 const add = async (req, res, _next) => {
   const { name } = req.body;
+
+  if (!name) return res.status(400).json({ message: '"name" is required' });
+
+  if (name.length < 5) {
+    return res.status(422).json({ message: '"name" length must be at least 5 characters long' });
+  }
+
   const product = await prodServ.add(name);
 
   return res.status(201).json(product);
