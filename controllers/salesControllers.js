@@ -26,6 +26,17 @@ const add = async (req, res, _next) => {
   return res.status(201).json(sale);
 };
 
+const update = async (req, res, _next) => {
+  const { id } = req.params;
+  const arraySale = req.body;
+
+  const updated = await saleServ.update(id, arraySale);
+
+  if (updated.message !== undefined) return res.status(404).json({ message: updated.message });
+
+  return res.status(200).json(updated);
+};
+
 const deleteSale = async (req, res, _next) => {
   const { id } = req.params;
 
@@ -40,5 +51,6 @@ module.exports = {
   getAll,
   getById,
   add,
+  update,
   deleteSale,
 };

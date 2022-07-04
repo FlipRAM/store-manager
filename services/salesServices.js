@@ -18,10 +18,16 @@ const addSale = async (arrayOfSales) => {
   return response;
 };
 
+const update = async (id, arrayOfSales) => {
+  const response = await saleModel.update(id, arrayOfSales);
+
+  return response;
+};
+
 const deleteSale = async (id) => {
   const response = await saleModel.deleteSale(id);
 
   return response;
 };
 
-module.exports = { getAll, getById, addSale, deleteSale };
+module.exports = { getAll, getById, addSale, update, deleteSale };

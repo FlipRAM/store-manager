@@ -8,6 +8,16 @@ const serialize = (obj) => ({
   quantity: obj.quantity,
 });
 
+const checkIfProdExist = async (array) => {
+  const idExist = await Promise.all(array.map(async (element) => {
+    if (element.productId === undefined) return false;
+    const id = await prodModel.getById(element.productId);
+    return (id !== null);
+  }));
+  if (idExist.includes(false)) return null;
+  return true;
+};
+
 const checkExistId = async (id) => {
   try {
     const [result] = await connection.query(`SELECT * FROM StoreManager.sales
@@ -71,18 +81,34 @@ const getSaleId = async (id, saleArray) => {
 };
 
 const addSale = async (saleArray) => {
-  const idExist = await Promise.all(saleArray.map(async (element) => {
-    const id = await prodModel.getById(element.productId);
-    return (id !== null);
-  }));
-
-  if (idExist.includes(false)) return null;
+  const exist = checkIfProdExist(saleArray);
+  if (exist === null) return null;
 
   const insertQuery = 'INSERT INTO StoreManager.sales (date) VALUES (NOW())';
   const [sale] = await connection.execute(insertQuery);
   const id = sale.insertId;
   const response = await getSaleId(id, saleArray);
   return response;
+};
+
+const update = async (id, saleArray) => {
+  const exist = await checkIfProdExist(saleArray);
+  if (exist === null) return { message: 'Product not found' };
+  const ifExist = await checkExistId(id);
+  if (ifExist !== null) {
+    try {
+      const updateQuery = `UPDATE StoreManager.sales_products
+      SET quantity = ? WHERE sale_id = ? AND product_id = ?`;
+      await saleArray.forEach(async (element) => {
+        await connection.query(updateQuery, [element.quantity, id, element.productId]);
+      });
+      return { saleId: id, itemsUpdated: saleArray };
+    } catch (err) {
+      console.log(err);
+      process.exit(1);
+    }
+  }
+  return { message: 'Sale not found' };
 };
 
 const deleteSale = async (id) => {
@@ -108,4 +134,4 @@ const deleteSale = async (id) => {
   return ifExist;
 };
 
-module.exports = { getAll, getById, getSaleId, addSale, deleteSale };
+module.exports = { getAll, getById, getSaleId, addSale, update, deleteSale };
