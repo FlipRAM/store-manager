@@ -34,4 +34,14 @@ const update = async (req, res, _next) => {
   return res.status(200).json(updated);
 };
 
-module.exports = { getAll, getById, add, update };
+const deleteProd = async (req, res, _next) => {
+  const { id } = req.params;
+
+  const deleted = await prodServ.deleteProd(id);
+
+  if (deleted === null) return res.status(404).json({ message: 'Product not found' });
+  
+  return res.status(204).json();
+};
+
+module.exports = { getAll, getById, add, update, deleteProd };

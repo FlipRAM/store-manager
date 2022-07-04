@@ -17,6 +17,8 @@ router.post('/products', prodMid.checkName, prodControl.add);
 
 router.put('/products/:id', prodMid.checkName, prodControl.update);
 
+router.delete('/products/:id', prodControl.deleteProd);
+
 router.get('/sales', saleControl.getAll);
 
 router.get('/sales/:id', saleControl.getById);
