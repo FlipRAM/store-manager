@@ -81,7 +81,7 @@ const getSaleId = async (id, saleArray) => {
 };
 
 const addSale = async (saleArray) => {
-  const exist = checkIfProdExist(saleArray);
+  const exist = await checkIfProdExist(saleArray);
   if (exist === null) return null;
 
   const insertQuery = 'INSERT INTO StoreManager.sales (date) VALUES (NOW())';
