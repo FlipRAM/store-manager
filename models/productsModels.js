@@ -37,4 +37,24 @@ const add = async (name) => {
   return match;
 };
 
-module.exports = { getAll, getById, add };
+const update = async (id, newName) => {
+  const ifExist = await getById(id);
+  if (ifExist !== null) {
+    try {
+      await connection.query(
+        'UPDATE StoreManager.products SET name = ? WHERE id = ?',
+        [newName, id],
+      );
+      return {
+        id,
+        name: newName,
+      };
+    } catch (err) {
+      console.log(err);
+      return process.exit(1);
+    }
+  }
+  return ifExist;
+};
+
+module.exports = { getAll, getById, add, update };
