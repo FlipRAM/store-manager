@@ -8,6 +8,18 @@ const serialize = (obj) => ({
   quantity: obj.quantity,
 });
 
+const checkExistId = async (id) => {
+  try {
+    const [result] = await connection.query(`SELECT * FROM StoreManager.sales
+      WHERE id = ?;`, [id]);
+    if (!result.length) return null;
+    return result[0];
+  } catch (err) {
+    console.error(err);
+    return process.exit(1);
+  }
+};
+
 const getAll = async () => {
   try {
     const [rows] = await connection.query(
@@ -73,4 +85,27 @@ const addSale = async (saleArray) => {
   return response;
 };
 
-module.exports = { getAll, getById, getSaleId, addSale };
+const deleteSale = async (id) => {
+  const ifExist = await checkExistId(id);
+
+  if (ifExist !== null) {
+    try {
+      await connection.query(
+        'DELETE FROM StoreManager.sales WHERE id = ?',
+        [id],
+      );
+      await connection.query(
+        'DELETE FROM StoreManager.sales_products WHERE sale_id = ?',
+        [id],
+      );
+      return true;
+    } catch (err) {
+      console.log(err);
+      process.exit(1);
+    }
+  }
+
+  return ifExist;
+};
+
+module.exports = { getAll, getById, getSaleId, addSale, deleteSale };

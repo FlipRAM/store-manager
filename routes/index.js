@@ -25,4 +25,6 @@ router.get('/sales/:id', saleControl.getById);
 
 router.post('/sales', saleMid.checkId, saleMid.checkQuant, saleControl.add);
 
+router.delete('/sales/:id', saleControl.deleteSale);
+
 module.exports = router;
