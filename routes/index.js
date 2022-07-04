@@ -14,6 +14,10 @@ router.get('/products/:id', prodControl.getById);
 
 router.post('/products', prodControl.add);
 
+router.get('/sales', saleControl.getAll);
+
+router.get('/sales/:id', saleControl.getById);
+
 router.post('/sales', saleMid.checkId, saleMid.checkQuant, saleControl.add);
 
 module.exports = router;
