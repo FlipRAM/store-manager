@@ -9,6 +9,8 @@ const saleControl = require('../controllers/salesControllers');
 const prodMid = require('../middlewares/productMiddleware');
 const saleMid = require('../middlewares/salesMiddleware');
 
+router.get('/products/search', prodControl.getByName);
+
 router.get('/products', prodControl.getAll);
 
 router.get('/products/:id', prodControl.getById);

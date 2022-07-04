@@ -74,4 +74,12 @@ const deleteProd = async (id) => {
   return ifExist;
 };
 
-module.exports = { getAll, getById, add, update, deleteProd };
+const getByName = async (q) => {
+  const nameQuery = `SELECT * FROM StoreManager.products WHERE name like '%${q}%'`;
+  const [match] = await connection.query(nameQuery);
+  if (match.length === 0) return [];
+
+  return match;
+};
+
+module.exports = { getAll, getById, add, update, deleteProd, getByName };

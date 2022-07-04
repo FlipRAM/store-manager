@@ -44,4 +44,14 @@ const deleteProd = async (req, res, _next) => {
   return res.status(204).json();
 };
 
-module.exports = { getAll, getById, add, update, deleteProd };
+const getByName = async (req, res, _next) => {
+  const { q } = req.query;
+
+  const match = await prodServ.getByName(q);
+
+  if (!match) return res.status(404).json([]);
+
+  return res.status(200).json(match);
+};
+
+module.exports = { getAll, getById, add, update, deleteProd, getByName };

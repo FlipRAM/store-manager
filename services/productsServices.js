@@ -30,4 +30,10 @@ const deleteProd = async (id) => {
   return deleted;
 };
 
-module.exports = { getAll, getById, add, update, deleteProd };
+const getByName = async (q) => {
+  const response = await prodModel.getByName(q);
+
+  return response;
+};
+
+module.exports = { getAll, getById, add, update, deleteProd, getByName };
