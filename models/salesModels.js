@@ -19,51 +19,36 @@ const checkIfProdExist = async (array) => {
 };
 
 const checkExistId = async (id) => {
-  try {
-    const [result] = await connection.query(`SELECT * FROM StoreManager.sales
-      WHERE id = ?;`, [id]);
-    if (!result.length) return null;
-    return result[0];
-  } catch (err) {
-    console.error(err);
-    return process.exit(1);
-  }
+  const [result] = await connection.query(`SELECT * FROM StoreManager.sales
+    WHERE id = ?;`, [id]);
+  if (!result.length) return null;
+  return result[0];
 };
 
 const getAll = async () => {
-  try {
-    const [rows] = await connection.query(
-      `SELECT sp.sale_id, sp.product_id, sp.quantity, s.date FROM StoreManager.sales_products as sp
-      INNER JOIN StoreManager.sales as s
-      ON sp.sale_id = s.id;`,
-    );
-    const response = rows.map((e) => serialize(e));
-    return response;
-  } catch (err) {
-    console.error(err);
-    return process.exit(1);
-  }
+  const [rows] = await connection.query(
+    `SELECT sp.sale_id, sp.product_id, sp.quantity, s.date FROM StoreManager.sales_products as sp
+    INNER JOIN StoreManager.sales as s
+    ON sp.sale_id = s.id;`,
+  );
+  const response = rows.map((e) => serialize(e));
+  return response;
 };
 
 const getById = async (id) => {
-  try {
-    const [rows] = await connection.query(
-      `SELECT sp.sale_id, sp.product_id, sp.quantity, s.date FROM StoreManager.sales_products as sp
-      INNER JOIN StoreManager.sales as s
-      ON sp.sale_id = s.id
-      WHERE sale_id = ?`,
-      [id],
-    );
-    const response = rows.map((e) => ({
-      date: e.date,
-      productId: e.product_id,
-      quantity: e.quantity,
-    }));
-    return response;
-  } catch (err) {
-    console.log(err);
-    return process.exit(1);
-  }
+  const [rows] = await connection.query(
+    `SELECT sp.sale_id, sp.product_id, sp.quantity, s.date FROM StoreManager.sales_products as sp
+    INNER JOIN StoreManager.sales as s
+    ON sp.sale_id = s.id
+    WHERE sale_id = ?`,
+    [id],
+  );
+  const response = rows.map((e) => ({
+    date: e.date,
+    productId: e.product_id,
+    quantity: e.quantity,
+  }));
+  return response;
 };
 
 const getSaleId = async (id, saleArray) => {
@@ -96,17 +81,12 @@ const update = async (id, saleArray) => {
   if (exist === null) return { message: 'Product not found' };
   const ifExist = await checkExistId(id);
   if (ifExist !== null) {
-    try {
-      const updateQuery = `UPDATE StoreManager.sales_products
-      SET quantity = ? WHERE sale_id = ? AND product_id = ?`;
-      await saleArray.forEach(async (element) => {
-        await connection.query(updateQuery, [element.quantity, id, element.productId]);
-      });
-      return { saleId: id, itemsUpdated: saleArray };
-    } catch (err) {
-      console.log(err);
-      process.exit(1);
-    }
+    const updateQuery = `UPDATE StoreManager.sales_products
+    SET quantity = ? WHERE sale_id = ? AND product_id = ?`;
+    await saleArray.forEach(async (element) => {
+      await connection.query(updateQuery, [element.quantity, id, element.productId]);
+    });
+    return { saleId: id, itemsUpdated: saleArray };
   }
   return { message: 'Sale not found' };
 };
@@ -115,20 +95,15 @@ const deleteSale = async (id) => {
   const ifExist = await checkExistId(id);
 
   if (ifExist !== null) {
-    try {
-      await connection.query(
-        'DELETE FROM StoreManager.sales WHERE id = ?',
-        [id],
-      );
-      await connection.query(
-        'DELETE FROM StoreManager.sales_products WHERE sale_id = ?',
-        [id],
-      );
-      return true;
-    } catch (err) {
-      console.log(err);
-      process.exit(1);
-    }
+    await connection.query(
+      'DELETE FROM StoreManager.sales WHERE id = ?',
+      [id],
+    );
+    await connection.query(
+      'DELETE FROM StoreManager.sales_products WHERE sale_id = ?',
+      [id],
+    );
+    return true;
   }
 
   return ifExist;
