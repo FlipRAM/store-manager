@@ -10,7 +10,7 @@ const {
 } = require('../../../__tests__/_dataMock');
 
 describe('List all sales in database', () => {
-  data = [
+  const data = [
     {
       saleId: 1,
       productId: 1,
@@ -60,7 +60,7 @@ describe('List all sales in database', () => {
 });
 
 describe('Gets the right element by id', () => {
-  data = [
+  const data = [
     {
       productId: 1,
       quantity: 5,
@@ -183,8 +183,8 @@ describe('Updates a sale', () => {
   ]
 
   const data = {
-      saleId: 2,
-      itemsUpdated: rightData,
+    saleId: 2,
+    itemsUpdated: rightData,
   }
 
   before(async () => {
